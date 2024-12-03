@@ -2,7 +2,7 @@ use std::fs;
 
 fn main() {
     // 1. Read from input
-    let file_path = "input";
+    let file_path = "day1/input.txt";
     println!("In file {file_path}");
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
 
@@ -35,7 +35,7 @@ fn main() {
     for i in 0..firsts.len() {
         total_distance += (firsts[i] - seconds[i]).abs();
     }
-    println!("Total distance is {total_distance}")
+    println!("Total distance is {total_distance}");
 
     //5. Calculate similarities
     let mut similarity = 0;
