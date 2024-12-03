@@ -36,4 +36,12 @@ fn main() {
         total_distance += (firsts[i] - seconds[i]).abs();
     }
     println!("Total distance is {total_distance}")
+
+    //5. Calculate similarities
+    let mut similarity = 0;
+    for first in firsts {
+        let num_found = seconds.iter().filter(|&&second| first == second).count() as i32;
+        similarity += first * num_found;
+    }
+    println!("Similarity = {similarity}")
 }
