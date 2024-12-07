@@ -9,8 +9,12 @@ fn main() {
             .split(" ")
             .map(|num| num.parse::<i32>().unwrap())
             .collect();
-        if is_row_safe(numbers) {
+        let len = numbers.len();
+        let num_str = format!("{:?}", numbers);
+        if is_row_safe(numbers, len) {
             safe_lines += 1;
+        } else {
+            println!("Not {:?}", num_str);
         }
     }
 

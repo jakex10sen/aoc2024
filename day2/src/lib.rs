@@ -4,43 +4,38 @@ pub fn parse_file(file_path: &str) -> String {
     fs::read_to_string(file_path).expect("Should have been able to read the file {file_path}")
 }
 
-pub fn is_row_safe(row: Vec<i32>) -> bool {
-    if row.is_empty() {
-        return false;
-    } else if row.len() == 1 {
+pub fn is_row_safe(row: Vec<i32>, orig_size: usize) -> bool {
+    if row.is_empty() || row.len() == 1 {
         return false;
     }
 
-    let mut increasing: bool = false;
-    for i in 1..row.len() {
-        let first: i32 = row[i - 1];
-        let second: i32 = row[i];
-        let diff: i32 = first - second;
+    let differences = row
+        .windows(2)
+        .map(|values| values[0] - values[1])
+        .collect::<Vec<i32>>();
 
-        if diff == 0 {
-            return false;
-        }
+    let in_range = differences
+        .iter()
+        .all(|&x| (x >= 1 && x <=3) || (x >= -3 && x <= -1));
 
-        if i == 1 {
-            if diff > 0 {
-                increasing = true;
-            } else {
-                increasing = false;
-            }
-        }
+    let increasing = differences.iter().all(|&x| x < 0);
+    let decreasing = differences.iter().all(|&x| x > 0);
 
-        if increasing {
-            if diff > 3 || diff < 1 {
-                return false;
-            }
-        } else {
-            if diff < -3 || diff > -1 {
-                return false;
+    if in_range && (increasing || decreasing) {
+        return true;
+    }
+
+    if orig_size == row.len() {
+        // Try each other permutation
+        for i in 0..orig_size {
+            let mut new_guy = row.to_vec();
+            new_guy.remove(i);
+            if is_row_safe(new_guy, orig_size) {
+                return true;
             }
         }
     }
-
-    return true;
+    false
 }
 
 #[cfg(test)]
@@ -48,40 +43,54 @@ mod tests {
 
     use super::*;
 
+
+    #[test]
+    fn known() {
+        assert!(is_row_safe(vec![7, 6, 4, 2, 1], 5_usize));
+        assert!(!is_row_safe(vec![1, 2, 7, 8, 9], 5_usize));
+        assert!(!is_row_safe(vec![9, 7, 6, 2, 1], 5_usize));
+        assert!(is_row_safe(vec![1, 3, 2, 4, 5], 5_usize));
+        assert!(is_row_safe(vec![8, 6, 4, 4, 1], 5_usize));
+        assert!(is_row_safe(vec![1, 3, 6, 7, 9], 5_usize));
+        assert!(is_row_safe(vec![14, 11, 9, 6, 3, 2], 5_usize));
+    }
+
     #[test]
     fn increasing() {
-        assert!(is_row_safe(vec![1, 2, 3, 4]));
+        assert!(is_row_safe(vec![1, 2, 3, 4], 4_usize));
+        assert!(is_row_safe(vec![-1, 2, 3, 4], 4_usize));
+        assert!(is_row_safe(vec![1, -2, 3, 4], 4_usize));
+        assert!(is_row_safe(vec![1, 2, -3, 4], 4_usize));
+        assert!(is_row_safe(vec![1, 2, 3, -4], 4_usize));
     }
 
     #[test]
     fn decreasing() {
-        assert!(is_row_safe(vec![4, 3, 2, 1]));
+        assert!(is_row_safe(vec![4, 3, 2, 1], 4_usize));
     }
 
     #[test]
     fn no_change() {
-        assert_eq!(is_row_safe(vec![1, 1, 1, 1]), false);
+        assert!(!is_row_safe(vec![1, 1, 1, 1], 4_usize));
     }
 
     #[test]
     fn too_small() {
-        assert_eq!(is_row_safe(vec![0]), false);
+        assert!(!is_row_safe(vec![0], 1_usize));
     }
 
     #[test]
     fn increase_too_fast() {
-        assert_eq!(is_row_safe(vec![1, 5, 10, 15]), false);
+        assert!(!is_row_safe(vec![1, 5, 10, 15], 4_usize));
     }
 
     #[test]
     fn decrease_too_fast() {
-        assert_eq!(is_row_safe(vec![15, 10, 5, 1]), false);
+        assert!(!is_row_safe(vec![15, 10, 5, 1], 4_usize));
     }
 
     #[test]
     fn change_directions() {
-        assert_eq!(is_row_safe(vec![15, 16, 15, 16]), false);
+        assert!(!is_row_safe(vec![15, 16, 15, 16], 4_usize));
     }
-
-
 }
