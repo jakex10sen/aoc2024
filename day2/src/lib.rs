@@ -1,8 +1,3 @@
-use std::fs;
-
-pub fn parse_file(file_path: &str) -> String {
-    fs::read_to_string(file_path).expect("Should have been able to read the file {file_path}")
-}
 
 pub fn is_row_safe(row: Vec<i32>, orig_size: usize) -> bool {
     if row.is_empty() || row.len() == 1 {

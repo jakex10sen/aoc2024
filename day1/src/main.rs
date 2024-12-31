@@ -1,10 +1,10 @@
-use std::fs;
+use common::parse_file;
 
 fn main() {
     // 1. Read from input
     let file_path = "day1/input.txt";
     println!("In file {file_path}");
-    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
+    let contents = parse_file(file_path);
 
     // 2. Parse out pairs into lists
     let mut firsts: Vec<i32> = vec![];

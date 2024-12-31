@@ -1,10 +1,6 @@
-use std::fs;
-
+use common::parse_file;
 use regex::Regex;
 
-pub fn parse_file(file_path: &str) -> String {
-    fs::read_to_string(file_path).expect("Should have been able to read the file")
-}
 fn main() {
     // Parse file into vec of lines
     let text = parse_file("day3/input.txt");
@@ -43,7 +39,7 @@ fn main() {
             None => text.len(),
         };
     }
-    
+
     // print the result
     println!("Sum {sum}");
 }

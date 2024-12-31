@@ -1,4 +1,5 @@
-use day2::{is_row_safe, parse_file};
+use common::parse_file;
+use day2::is_row_safe;
 
 fn main() {
     let contents = parse_file("day2/input.txt");
