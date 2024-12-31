@@ -11,7 +11,7 @@ pub fn is_row_safe(row: Vec<i32>, orig_size: usize) -> bool {
 
     let in_range = differences
         .iter()
-        .all(|&x| (x >= 1 && x <=3) || (x >= -3 && x <= -1));
+        .all(|&x| (1..=3).contains(&x) || (-3..=-1).contains(&x));
 
     let increasing = differences.iter().all(|&x| x < 0);
     let decreasing = differences.iter().all(|&x| x > 0);
